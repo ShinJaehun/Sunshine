@@ -80,7 +80,8 @@ public class ForecastFragment extends Fragment {
     }
 
     private void updateWeather() {
-        FetchWeatherTask weatherTask = new FetchWeatherTask();
+        //FetchWeatherTask weatherTask = new FetchWeatherTask();
+        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity(), mForecastAdapter);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String location = prefs.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
 
@@ -142,6 +143,7 @@ public class ForecastFragment extends Fragment {
 
     }
 
+    /*
     public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         @Override
         protected void onPostExecute(String[] result) {
@@ -161,13 +163,12 @@ public class ForecastFragment extends Fragment {
                 return null;
             }
 
-
             // These two need to be declared outside the try/catch
-// so that they can be closed in the finally block.
+            // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
-// Will contain the raw JSON response as a string.
+            // Will contain the raw JSON response as a string.
             String forecastJsonStr = null;
 
             String format = "json";
@@ -256,10 +257,11 @@ public class ForecastFragment extends Fragment {
             return null;
         }
     }
+    */
 
-    /* The date/time conversion code is going to be moved outside the asynctask later,
-        * so for convenience we're breaking it out into its own method now.
-        */
+    /*
+//    The date/time conversion code is going to be moved outside the asynctask later,
+//    so for convenience we're breaking it out into its own method now.
     private String getReadableDateString(long time){
         // Because the API returns a unix timestamp (measured in seconds),
         // it must be converted to milliseconds in order to be converted to valid date.
@@ -267,9 +269,7 @@ public class ForecastFragment extends Fragment {
         return shortenedDateFormat.format(time);
     }
 
-    /**
-     * Prepare the weather high/lows for presentation.
-     */
+//    Prepare the weather high/lows for presentation.
     private String formatHighLows(double high, double low, String unitType) {
         // For presentation, assume the user doesn't care about tenths of a degree.
 
@@ -287,13 +287,11 @@ public class ForecastFragment extends Fragment {
         return highLowStr;
     }
 
-    /**
-     * Take the String representing the complete forecast in JSON Format and
-     * pull out the data we need to construct the Strings needed for the wireframes.
-     *
-     * Fortunately parsing is easy:  constructor takes the JSON string and converts it
-     * into an Object hierarchy for us.
-     */
+
+//    Take the String representing the complete forecast in JSON Format and
+//    pull out the data we need to construct the Strings needed for the wireframes.
+//    Fortunately parsing is easy:  constructor takes the JSON string and converts it
+//    into an Object hierarchy for us.
     private String[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
             throws JSONException {
 
@@ -367,6 +365,7 @@ public class ForecastFragment extends Fragment {
         return resultStrs;
 
     }
+    */
 
     private void openPreferredLocationInMap() {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());

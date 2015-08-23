@@ -103,6 +103,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         // Otherwise, insert it using the content resolver and the base URI
         Long locationId;
 
+        //이 query 자체가 DB에서 locationSetting에 해당하는 쿼리가 존재하는지 확인하는 과정이다.
         Cursor locationCursor = mContext.getContentResolver().query(
                 WeatherContract.LocationEntry.CONTENT_URI,
                 new String[]{WeatherContract.LocationEntry._ID},
@@ -110,11 +111,22 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
                 new String[]{locationSetting},
                 null
         );
+        //안드로이드 커서는 열 전체의 모음이다! 하나만을 의미하는게 아냐!
+
+        //Log.d(LOG_TAG, "locationCursor : " + locationCursor.toString());
+        //그니까 이건 걍 주소만 보여줄 뿐이지
 
         if (locationCursor.moveToFirst()) {
+            //커서가 첫번째 열을 가리킬 수 있다면(DB에 기존 자료가 존재한다면)
+            //locationCursor에서 유일무이한 컬럼인 _ID로 index를 알아냄
+            //이렇게 해서 location 정보가 중복되지 않음
+            //_ID index를 이용해 얻은 해당 locationId를 return함.
             int locationIdIndex = locationCursor.getColumnIndex(WeatherContract.LocationEntry._ID);
             locationId = locationCursor.getLong(locationIdIndex);
         } else {
+            //열이 아무것도 없어 커서가 비어있다면
+            //즉, 기존에 없던 location 값이라면!
+            //새로 location을 생성해서 insert()하고 여기서 나오는 locationId를 리턴함.
             ContentValues locationValues = new ContentValues();
 
             locationValues.put(WeatherContract.LocationEntry.COLUMN_CITY_NAME, cityName);
@@ -316,6 +328,12 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
             Log.d(LOG_TAG, "FetchWeatherTask Complete. " + cVVector.size() + " Inserted");
 
             String[] resultStrs = convertContentValuesToUXFormat(cVVector);
+
+            for (int i = 0 ; i <  resultStrs.length ; i++ ) {
+                Log.d(LOG_TAG, "resultStrs[" + i +"] :  " + resultStrs[i]);
+
+            }
+
             return resultStrs;
 
         } catch (JSONException e) {
@@ -366,6 +384,8 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
             URL url = new URL(builtUri.toString());
 
+            Log.v(LOG_TAG, "Built URI " + builtUri.toString());
+
             // Create the request to OpenWeatherMap, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
@@ -393,6 +413,9 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
                 return null;
             }
             forecastJsonStr = buffer.toString();
+
+            Log.v(LOG_TAG, "Forecast Json String: " + forecastJsonStr);
+
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attemping
@@ -425,6 +448,12 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
     protected void onPostExecute(String[] result) {
         if (result != null && mForecastAdapter != null) {
             mForecastAdapter.clear();
+
+            for (int i = 0 ; i <  result.length ; i++ ) {
+                Log.d(LOG_TAG, "onPostExecute - result[" + i +"] :  " + result[i]);
+
+            }
+
             for(String dayForecastStr : result) {
                 mForecastAdapter.add(dayForecastStr);
             }

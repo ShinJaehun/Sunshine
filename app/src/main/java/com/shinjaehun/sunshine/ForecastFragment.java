@@ -99,31 +99,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         return super.onOptionsItemSelected(item);
     }
 
-    private void updateWeather() {
-        //FetchWeatherTask weatherTask = new FetchWeatherTask();
-//        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity(), mForecastAdapter);
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-//        String location = prefs.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
-
-
-        //String temp_units = prefs.getString(getString(R.string.pref_temperature_key), getString(R.string.pref_temperature_default));
-        //Log.v(LOG_TAG, "temp  : " + temp_units);
-
-        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity());
-        String location = Utility.getPreferredLocation(getActivity());
-        weatherTask.execute(location);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateWeather();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
 /*
         String[] forecastItems = {
                 "Wed - Sunny - 26 / 21",
@@ -185,9 +163,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 }
             }
         });
-
         return rootView;
-
     }
 
     @Override
@@ -195,6 +171,33 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         getLoaderManager().initLoader(FORECAST_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
+
+    void onLocationChanged() {
+        updateWeather();
+        getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
+    }
+
+    private void updateWeather() {
+        //FetchWeatherTask weatherTask = new FetchWeatherTask();
+//        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity(), mForecastAdapter);
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//        String location = prefs.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
+
+
+        //String temp_units = prefs.getString(getString(R.string.pref_temperature_key), getString(R.string.pref_temperature_default));
+        //Log.v(LOG_TAG, "temp  : " + temp_units);
+
+        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity());
+        String location = Utility.getPreferredLocation(getActivity());
+        weatherTask.execute(location);
+    }
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        updateWeather();
+//    }
+
 
     /*
     public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
@@ -443,7 +446,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
         String locationSetting = Utility.getPreferredLocation(getActivity());
         String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
-        Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(locationSetting, System.currentTimeMillis());
+        Uri weatherForLocationUri = WeatherContract.WeatherEntry.
+                buildWeatherLocationWithStartDate(locationSetting, System.currentTimeMillis());
 
 //        Cursor cur = getActivity().getContentResolver().query(weatherForLocationUri, null, null, null, sortOrder);
 //
@@ -455,7 +459,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 //        lv.setAdapter(mForecastAdapter);
 
 
-        return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, null, null, sortOrder);
+        return new CursorLoader(getActivity(),
+                weatherForLocationUri, FORECAST_COLUMNS, null, null, sortOrder);
     }
 
     @Override

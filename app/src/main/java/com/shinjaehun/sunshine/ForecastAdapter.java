@@ -18,9 +18,9 @@ import org.w3c.dom.Text;
  * from a {@link android.database.Cursor} to a {@link android.widget.ListView}.
  */
 public class ForecastAdapter extends CursorAdapter {
-    public ForecastAdapter(Context context, Cursor c, int flags) {
-        super(context, c, flags);
-    }
+//    public ForecastAdapter(Context context, Cursor c, int flags) {
+//        super(context, c, flags);
+//    }
 
     private static final int VIEW_TYPE_TODAY = 0;
     private static final int VIEW_TYPE_FUTURE_DAY = 1;
@@ -72,6 +72,28 @@ public class ForecastAdapter extends CursorAdapter {
 //                " - " + highAndLow;
 //    }
 
+    public static class ViewHolder {
+        public final ImageView iconView;
+        public final TextView dateView;
+        public final TextView descriptionView;
+        public final TextView highTempView;
+        public final TextView lowTempView;
+
+        public ViewHolder(View view) {
+            iconView = (ImageView)view.findViewById(R.id.list_item_icon);
+            dateView = (TextView)view.findViewById(R.id.list_item_date_textview);
+            descriptionView = (TextView)view.findViewById(R.id.list_item_forecast_textview);
+            highTempView = (TextView)view.findViewById(R.id.list_item_high_textview);
+            lowTempView = (TextView)view.findViewById(R.id.list_item_low_textview);
+        }
+
+
+    }
+
+    public ForecastAdapter(Context context, Cursor c, int flags) {
+        super(context, c, flags);
+    }
+
     /*
         Remember that these views are reused as needed.
      */
@@ -86,7 +108,13 @@ public class ForecastAdapter extends CursorAdapter {
             layoutId = R.layout.list_item_forecast;
         }
 
+//        View view = LayoutInflater.from(context).inflate(layoutId, parent, false);
+//        return view;
+
         View view = LayoutInflater.from(context).inflate(layoutId, parent, false);
+        ViewHolder viewHolder = new ViewHolder(view);
+        view.setTag(viewHolder);
+
         return view;
     }
 
@@ -101,28 +129,38 @@ public class ForecastAdapter extends CursorAdapter {
 //        TextView tv = (TextView)view;
 //        tv.setText(convertCursorRowToUXFormat(cursor));
 
-        int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_ID);
-        ImageView iconView = (ImageView)view.findViewById(R.id.list_item_icon);
-        iconView.setImageResource(R.drawable.ic_launcher);
+//        int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_ID);
+//        ImageView iconView = (ImageView)view.findViewById(R.id.list_item_icon);
+//        iconView.setImageResource(R.drawable.ic_launcher);
+
+        ViewHolder viewHolder = (ViewHolder)view.getTag();
+        viewHolder.iconView.setImageResource(R.drawable.ic_launcher);
 
         long dateInMillis = cursor.getLong(ForecastFragment.COL_WEATHER_DATE);
-        TextView dateView = (TextView)view.findViewById(R.id.list_item_date_textview);
-        dateView.setText(Utility.getFriendlyDayString(context, dateInMillis));
+//        TextView dateView = (TextView)view.findViewById(R.id.list_item_date_textview);
+//        dateView.setText(Utility.getFriendlyDayString(context, dateInMillis));
+
+        viewHolder.dateView.setText(Utility.getFriendlyDayString(context, dateInMillis));
 
         String description = cursor.getString(ForecastFragment.COL_WEATHER_DESC);
-        TextView descriptionView = (TextView)view.findViewById(R.id.list_item_forecast_textview);
-        descriptionView.setText(description);
+//        TextView descriptionView = (TextView)view.findViewById(R.id.list_item_forecast_textview);
+//        descriptionView.setText(description);
 
+        viewHolder.descriptionView.setText(description);
 
         boolean isMetric = Utility.isMetric(context);
 
         double high = cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP);
-        TextView highView = (TextView)view.findViewById(R.id.list_item_high_textview);
-        highView.setText(Utility.formatTemperature(high, isMetric));
+//        TextView highView = (TextView)view.findViewById(R.id.list_item_high_textview);
+//        highView.setText(Utility.formatTemperature(high, isMetric));
+
+        viewHolder.highTempView.setText(Utility.formatTemperature(context, high, isMetric));
 
         double low = cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP);
-        TextView lowView = (TextView)view.findViewById(R.id.list_item_low_textview);
-        lowView.setText(Utility.formatTemperature(low, isMetric));
+//        TextView lowView = (TextView)view.findViewById(R.id.list_item_low_textview);
+//        lowView.setText(Utility.formatTemperature(low, isMetric));
 
+        viewHolder.lowTempView.setText(Utility.formatTemperature(context, low, isMetric));
+        //DetailActivityFragment에서는 getActivity()를 쓰는데 왜 여기에서는 그냥 context를 넣어도 되는 걸까?
     }
 }

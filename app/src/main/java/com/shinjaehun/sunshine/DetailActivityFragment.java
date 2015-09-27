@@ -142,8 +142,9 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         String dateString = Utility.formatDate(data.getLong(COL_WEATHER_DATE));
         String weatherDescription = data.getString(COL_WEATHER_DESC);
         boolean isMetric = Utility.isMetric(getActivity());
-        String high = Utility.formatTemperature(data.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
-        String low = Utility.formatTemperature(data.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
+        String high = Utility.formatTemperature(getActivity(), data.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
+        String low = Utility.formatTemperature(getActivity(), data.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
+        //ForecastAdapter에서는 context라고 선언하는데 여기에서는 왜 getActivity()를 쓰는 걸까?
 
         mForecast = String.format("%s - %s - %s/%s", dateString, weatherDescription, high, low);
 

@@ -204,8 +204,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 //        detailTextView.setText(mForecast);
 
             int weatherId = data.getInt(COL_WEATHER_CONDITION_ID);
-
-            mIconView.setImageResource(R.drawable.ic_launcher);
+            mIconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
 
             long date = data.getLong(COL_WEATHER_DATE);
             String friendlyDateText = Utility.getDayName(getActivity(), date);

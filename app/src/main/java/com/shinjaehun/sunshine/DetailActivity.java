@@ -15,23 +15,18 @@ public class DetailActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_detail);
 
+//            if (savedInstanceState == null) {
+//                FragmentManager mf = getSupportFragmentManager();
+//                DetailActivityFragment detailActivityFragment = (DetailActivityFragment)mf.findFragmentById(R.id.container);
+//                if (detailActivityFragment == null) {
+//                    android.support.v4.app.FragmentTransaction ft = mf.beginTransaction();
+//                    ft.add(R.id.container, new DetailActivityFragment()).commit();
+//                }
+//            }
             if (savedInstanceState == null) {
-
-
-                FragmentManager mf = getSupportFragmentManager();
-
-                DetailActivityFragment detailActivityFragment = (DetailActivityFragment)mf.findFragmentById(R.id.container);
-
-                if (detailActivityFragment == null) {
-                    android.support.v4.app.FragmentTransaction ft = mf.beginTransaction();
-                    ft.add(R.id.container, new DetailActivityFragment()).commit();
-
-
-                }
-
-
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.weather_detail_container, new DetailActivityFragment()).commit();
             }
-
 
     }
 

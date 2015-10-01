@@ -115,6 +115,9 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         mWindView = (TextView)rootView.findViewById(R.id.wind_tv);
         mPressureview = (TextView)rootView.findViewById(R.id.pressure_tv);
 
+//        테스트
+//        mDescriptionView.setText("Hello World!");
+
         return rootView;
         //Log.v(LOG_TAG, "In onCreateView");
 
@@ -168,7 +171,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
         Log.v(LOG_TAG, "In onCreateLoader");
         Intent intent = getActivity().getIntent();
-        if (intent == null) {
+        if (intent == null || intent.getData() == null) {
             return null;
         }
 

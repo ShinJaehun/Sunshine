@@ -31,7 +31,8 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
     //private String mForecastStr;
 
-    //public static final String DETAIL_URI = "URI";
+    public static final String DETAIL_URI = "URI";
+    private Uri mUri;
 
     private ShareActionProvider mShareActionProvider;
     private String mForecast;
@@ -88,6 +89,11 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            mUri = arguments.getParcelable(DetailActivityFragment.DETAIL_URI);
+        }
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 //
@@ -162,6 +168,16 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         super.onActivityCreated(savedInstanceState);
     }
 
+    void onLocationChanged(String newLocation) {
+        Uri uri = mUri;
+        if (null != uri) {
+            long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+            Uri updatedUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+            mUri = updatedUri;
+            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+        }
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         //이럴필요가 없다!
@@ -169,21 +185,32 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 //        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
 //        Uri weatherForeLocationUri = WeatherContract.WeatherEntry.buildWeatherLocation(locationSetting);
 
-        Log.v(LOG_TAG, "In onCreateLoader");
-        Intent intent = getActivity().getIntent();
-        if (intent == null || intent.getData() == null) {
-            return null;
+//        Log.v(LOG_TAG, "In onCreateLoader");
+//        Intent intent = getActivity().getIntent();
+//        if (intent == null || intent.getData() == null) {
+//            return null;
+//        }
+        if (null != mUri) {
+            return new CursorLoader(
+                    getActivity(),
+                    mUri,
+                    DETAIL_COLUMNS,
+                    null,
+                    null,
+                    null
+            );
         }
 
-        return new CursorLoader(
-                getActivity(),
-                intent.getData(),
-                DETAIL_COLUMNS,
-                null,
-                null,
-                null
-        );
+//        return new CursorLoader(
+//                getActivity(),
+//                intent.getData(),
+//                DETAIL_COLUMNS,
+//                null,
+//                null,
+//                null
+//        );
 
+        return null;
 //        return new CursorLoader(getActivity(), intent.getData(), FORECAST_COLUMNS, null, null, null);
     }
 
@@ -217,6 +244,8 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
             String description = data.getString(COL_WEATHER_DESC);
             mDescriptionView.setText(description);
+
+            mIconView.setContentDescription(description);
 
             boolean isMetric = Utility.isMetric(getActivity());
 
@@ -273,4 +302,5 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
+
 }

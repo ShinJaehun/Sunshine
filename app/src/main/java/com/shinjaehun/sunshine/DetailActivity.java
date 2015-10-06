@@ -23,10 +23,20 @@ public class DetailActivity extends AppCompatActivity {
 //                    ft.add(R.id.container, new DetailActivityFragment()).commit();
 //                }
 //            }
-            if (savedInstanceState == null) {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.weather_detail_container, new DetailActivityFragment()).commit();
-            }
+
+//            if (savedInstanceState == null) {
+//                getSupportFragmentManager().beginTransaction()
+//                        .add(R.id.weather_detail_container, new DetailActivityFragment()).commit();
+//            }
+
+        if (savedInstanceState == null) {
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(DetailActivityFragment.DETAIL_URI, getIntent().getData());
+            DetailActivityFragment fragment = new DetailActivityFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.weather_detail_container, fragment).commit();
+        }
 
     }
 
